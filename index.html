@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>An Unforgettable Birthday Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Fonts */
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden; /* Prevent scrolling */
+            background-color: #000;
+        }
+
+        .fancy-font {
+            font-family: 'Great Vibes', cursive;
+        }
+
+        /* Page Structure */
+        .page {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.5s ease-in-out, visibility 1.5s;
+            z-index: 1;
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 2;
+        }
+        
+        .content-layer {
+            z-index: 2;
+            position: relative;
+            animation: fadeInContent 2s 1s ease-out forwards;
+            opacity:0;
+        }
+
+        @keyframes fadeInContent {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Preloader */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100;
+            display: flex; justify-content: center; align-items: center; flex-direction: column; transition: opacity 0.5s ease;
+        }
+        #preloader .heart {
+            width: 50px; height: 50px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff4757'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") no-repeat center;
+            background-size: contain; animation: pulse 1.5s infinite;
+        }
+        #preloader p {
+            margin-top: 1rem; font-family: 'Great Vibes', cursive; font-size: 1.5rem; color: #ff4757;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); }
+        }
+
+
+        /* Page 1: Starry Night */
+        #page1 { background-color: #00001a; }
+        #starry-sky { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+        /* Page 2: The Locket */
+        #page2 { background: linear-gradient(320deg, #480048, #C04848); }
+        #bokeh-background {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; z-index: 1;
+        }
+        .bokeh-circle {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle, var(--color1), var(--color2));
+            animation: drift 20s infinite ease-in-out alternate;
+        }
+        @keyframes drift {
+            from { transform: translateX(var(--x-start)) translateY(var(--y-start)) scale(var(--scale-start)); }
+            to { transform: translateX(var(--x-end)) translateY(var(--y-end)) scale(var(--scale-end)); }
+        }
+        #locket-container {
+            position: relative; cursor: pointer; z-index: 10; transition: transform 0.5s ease;
+        }
+        #locket-container:hover { transform: scale(1.1); }
+        #locket-svg {
+            width: 200px; filter: drop-shadow(0 0 15px rgba(255, 223, 186, 0.5)); transition: filter 0.5s ease;
+        }
+        #locket-container.opened #locket-svg { filter: drop-shadow(0 0 35px rgba(255, 223, 186, 1)); }
+        #locket-container.opened #locket-left { transform: rotate(-110deg) translateX(-5px) translateY(5px); }
+        #locket-container.opened #locket-right { transform: rotate(110deg) translateX(5px) translateY(5px); }
+        #locket-container.opened .locket-photo { opacity: 1; }
+        #locket-left, #locket-right {
+            transition: transform 1.5s cubic-bezier(0.76, 0, 0.24, 1); transform-origin: top center;
+        }
+        .locket-photo {
+            opacity: 0;
+            transition: opacity 1s 0.5s;
+        }
+        .heart-balloon {
+            position: absolute; z-index: 5; opacity: 0; animation: float-up 8s ease-out forwards;
+        }
+        @keyframes float-up {
+            0% { opacity: 0.8; transform: translateY(0) scale(0.1); }
+            100% { opacity: 0; transform: translateY(-100vh) scale(1) translateX(var(--x-drift)); }
+        }
+        
+        /* Page 3: Memory Lane & Storybook */
+        #page3 {
+            background: linear-gradient(180deg, #ffdde1 0%, #ee9ca7 100%);
+            color: #444;
+        }
+        #particles-js {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+        }
+        #carousel-container {
+            width: 100%;
+            height: 40vh;
+            position: relative;
+            perspective: 1200px;
+            margin-top: 1rem;
+            transition: opacity 0.8s, transform 0.8s;
+            cursor: grab;
+        }
+        #carousel {
+            width: 100%; height: 100%; position: absolute;
+            transform-style: preserve-3d;
+        }
+        .polaroid {
+            position: absolute; left: calc(50% - 110px); top: calc(50% - 130px);
+            width: 220px; height: 260px; background: white; padding: 0.8rem;
+            border-radius: 8px; box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1), opacity 0.8s, filter 0.8s;
+            display: flex; flex-direction: column; align-items: center;
+            user-select: none;
+            /* Added for background effect */
+            overflow: hidden;
+        }
+        /* NEW: Blurred background for polaroid */
+        .polaroid::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(0.7);
+            z-index: 1;
+        }
+        .polaroid img {
+            width: 100%; height: 190px; object-fit: cover; border-radius: 4px; pointer-events: none;
+            /* Added for layering */
+            position: relative;
+            z-index: 2;
+        }
+        .polaroid .caption {
+            font-family: 'Great Vibes', cursive; font-size: 1.5rem; margin-top: 0.5rem;
+            opacity: 0; transition: opacity 0.5s ease-in-out;
+            /* Added for layering and readability */
+            position: relative;
+            z-index: 2;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        }
+        .polaroid.active { filter: none; }
+        .polaroid.active .caption { opacity: 1; }
+        
+        #instruction-text {
+            position: absolute; bottom: 0px; width: 100%; text-align: center;
+            font-size: 1rem; color: rgba(68, 68, 68, 0.7); transition: opacity 0.5s; z-index: 20;
+        }
+
+        #open-book-btn {
+            opacity: 0; visibility: hidden; transition: opacity 1s;
+            background: #d66d75; color: white; padding: 0.5rem 1.5rem;
+            border-radius: 50px; cursor: pointer; margin-top: 1rem;
+            border: 2px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        #open-book-btn.visible { opacity: 1; visibility: visible; }
+
+        #storybook-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 1s, visibility 0s 1s; z-index: 30;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(10px);
+        }
+        #storybook-container.visible { opacity: 1; visibility: visible; transition-delay: 0s; }
+
+        #book {
+            width: 90vw; max-width: 800px; height: 60vh; max-height: 500px;
+            background: #fff8f8; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            display: flex; position: relative;
+        }
+        .book-page {
+            width: 50%; height: 100%; padding: 2rem;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            font-size: clamp(0.9rem, 1.5vw, 1.1rem); line-height: 1.7; color: #555;
+        }
+        #book-content .page-pair { display: none; }
+        #book-content .page-pair.active { display: flex; width: 100%; height: 100%; }
+        .book-page h3 { font-family: 'Great Vibes', cursive; font-size: 2.5rem; margin-bottom: 1rem; color: #c06c84; }
+        
+        .book-nav {
+            position: absolute;
+            bottom: 1rem;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            box-sizing: border-box;
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: #c06c84;
+            cursor: pointer;
+        }
+        #close-book-btn {
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0.25rem 1rem;
+            border: 1px solid #c06c84;
+            border-radius: 20px;
+        }
+        .nav-btn:disabled { color: #ccc; }
+
+        .final-message {
+            margin-top: 1rem; opacity: 0; transform: translateY(30px);
+            transition: opacity 1s, transform 1s;
+        }
+        .final-message.visible { opacity: 1; transform: translateY(0); }
+
+        /* Transition Button */
+        .transition-btn {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white; padding: 0.75rem 2rem; border-radius: 50px; font-size: 1.25rem;
+            cursor: pointer; transition: all 0.3s ease; margin-top: 3rem; z-index: 5;
+        }
+        .transition-btn:hover {
+            background: rgba(255, 255, 255, 0.2); transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="heart"></div>
+        <p>Preparing your surprise...</p>
+    </div>
+
+    <!-- Page 1: The Wish - A Starry Night -->
+    <section id="page1" class="page active">
+        <canvas id="starry-sky"></canvas>
+        <div class="content-layer text-center">
+            <h1 class="fancy-font text-6xl md:text-8xl font-bold mb-4 text-yellow-200 drop-shadow-lg">Happy Birthday, My Dearest</h1>
+            <p class="text-2xl md:text-3xl text-pink-200 font-light">The stars aligned the day you were born.</p>
+            <button id="to-page-2" class="transition-btn fancy-font">Begin the Journey</button>
+        </div>
+    </section>
+
+    <!-- Page 2: The Locket -->
+    <section id="page2" class="page">
+        <div id="bokeh-background"></div>
+        <div class="content-layer text-center text-white">
+            <div id="locket-prompt">
+                <h2 class="fancy-font text-5xl md:text-7xl font-bold mb-4">A Locket for Your Heart</h2>
+                <p class="text-xl md:text-2xl font-light mb-8">Click to unlock the magic inside...</p>
+            </div>
+            <div id="locket-reveal" class="hidden">
+                 <h2 class="fancy-font text-5xl md:text-7xl font-bold mb-4 text-pink-200">My Heart is Yours</h2>
+                 <p class="text-xl md:text-2xl font-light">Sending all my love to you on your special day.</p>
+                 <button id="to-page-3" class="transition-btn fancy-font hidden">Our Unforgettable Story</button>
+            </div>
+        </div>
+        <div id="locket-container" class="mt-8">
+             <svg id="locket-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <defs>
+                    <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#fde3a7;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#f5c469;stop-opacity:1" />
+                    </linearGradient>
+                    <clipPath id="heart-clip-left"><path d="M 100,50 A 40,40 0,0,0 60,90 L 100,130 Z"/></clipPath>
+                    <clipPath id="heart-clip-right"><path d="M 100,50 A 40,40 0,0,1 140,90 L 100,130 Z"/></clipPath>
+                </defs>
+                <g id="locket-right">
+                    <!-- Add your photo link for the right side here -->
+                    <image class="locket-photo" clip-path="url(#heart-clip-right)" height="100%" width="100%" xlink:href="https://placehold.co/200x200/f8c291/FFFFFF?text=You" />
+                    <path d="M 100,50 A 40,40 0,0,1 140,90 L 100,130 V 50 Z" fill="url(#gold-gradient)"/>
+                </g>
+                <g id="locket-left">
+                    <!-- Add your photo link for the left side here -->
+                    <image class="locket-photo" clip-path="url(#heart-clip-left)" height="100%" width="100%" xlink:href="https://placehold.co/200x200/e77f67/FFFFFF?text=Me" />
+                    <path d="M 100,50 A 40,40 0,0,0 60,90 L 100,130 V 50 Z" fill="url(#gold-gradient)"/>
+                </g>
+            </svg>
+        </div>
+        <div id="balloon-container"></div>
+    </section>
+
+    <!-- Page 3: Memory Lane & Storybook -->
+    <section id="page3" class="page">
+        <div id="particles-js"></div>
+        <div class="content-layer text-center w-full h-full flex flex-col justify-center">
+            <h2 class="fancy-font text-5xl md:text-7xl font-bold mb-4">Our Memory Lane</h2>
+            
+            <div id="carousel-container">
+                <div id="carousel"></div>
+                <div id="instruction-text">Move your cursor to guide the memories</div>
+            </div>
+
+            <button id="open-book-btn" class="fancy-font text-2xl">Read Our Story</button>
+
+            <div class="final-message max-w-3xl mx-auto">
+                <p class="text-xl md:text-2xl font-light">Thank you for walking down our memory lane. My story is incomplete without you.</p>
+                <h3 class="fancy-font text-4xl mt-6 text-red-500">Happy Birthday, my everything.</h3>
+            </div>
+        </div>
+        
+        <div id="storybook-container">
+             <div id="book">
+                <div id="book-content">
+                    <!-- Pages will be injected by JS -->
+                </div>
+                <div class="book-nav">
+                    <button id="prev-page-btn" class="nav-btn">&laquo;</button>
+                    <button id="close-book-btn" class="nav-btn fancy-font">Close</button>
+                    <button id="next-page-btn" class="nav-btn">&raquo;</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- This is the complete script. No need to add extra <script> tags. -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            const preloader = document.getElementById('preloader');
+            window.addEventListener('load', () => {
+                preloader.style.opacity = '0';
+                setTimeout(() => preloader.style.display = 'none', 500);
+            });
+
+            const page1 = document.getElementById('page1');
+            const page2 = document.getElementById('page2');
+            const page3 = document.getElementById('page3');
+
+            const toPage2Btn = document.getElementById('to-page-2');
+            const toPage3Btn = document.getElementById('to-page-3');
+
+            function switchPage(fromPage, toPage) {
+                fromPage.classList.remove('active');
+                toPage.classList.add('active');
+            }
+
+            toPage2Btn.addEventListener('click', () => switchPage(page1, page2));
+            toPage3Btn.addEventListener('click', () => switchPage(page2, page3));
+
+
+            // --- PAGE 1: STARRY SKY SCRIPT ---
+            const canvas = document.getElementById('starry-sky');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let stars = [];
+            for (let i = 0; i < 300; i++) { stars.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 1.5 + 0.5, alpha: Math.random(), twinkleSpeed: Math.random() * 0.01 + 0.005, parallax: Math.random() * 0.5 + 0.1 }); }
+            let fallingStars = [];
+            function createFallingStar() { fallingStars.push({ x: Math.random() * canvas.width, y: -10, length: Math.random() * 80 + 20, speed: Math.random() * 6 + 4, alpha: 1 }); }
+            function drawSky() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                stars.forEach(star => {
+                    star.alpha += star.twinkleSpeed;
+                    if (star.alpha > 1) { star.alpha = 1; star.twinkleSpeed *= -1; } else if (star.alpha < 0.1) { star.alpha = 0.1; star.twinkleSpeed *= -1; }
+                    ctx.beginPath(); ctx.arc(star.x, star.y, star.radius * star.parallax, 0, Math.PI * 2); ctx.fillStyle = `rgba(255, 255, 224, ${star.alpha})`; ctx.fill();
+                });
+                fallingStars.forEach((star, index) => {
+                    star.y += star.speed; star.x -= star.speed / 2; star.alpha -= 0.015;
+                    if (star.alpha <= 0) { fallingStars.splice(index, 1); } else {
+                        ctx.beginPath(); ctx.moveTo(star.x, star.y); ctx.lineTo(star.x + star.length, star.y - star.length / 2);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${star.alpha})`; ctx.lineWidth = 2; ctx.stroke();
+                    }
+                });
+                requestAnimationFrame(drawSky);
+            }
+            setInterval(createFallingStar, 600);
+            drawSky();
+
+            // --- PAGE 2: LOCKET SCRIPT ---
+            const locketContainer = document.getElementById('locket-container');
+            const locketPrompt = document.getElementById('locket-prompt');
+            const locketReveal = document.getElementById('locket-reveal');
+            const balloonContainer = document.getElementById('balloon-container');
+            const bokehContainer = document.getElementById('bokeh-background');
+            const colors = [['#ff9a9e', '#fad0c4'], ['#fbc2eb', '#a18cd1'], ['#ff7675', '#d63031']];
+            for (let i = 0; i < 20; i++) {
+                const circle = document.createElement('div');
+                circle.className = 'bokeh-circle';
+                const size = Math.random() * 150 + 50;
+                circle.style.width = `${size}px`; circle.style.height = `${size}px`; circle.style.left = `${Math.random() * 100}%`;
+                circle.style.top = `${Math.random() * 100}%`; circle.style.opacity = Math.random() * 0.3 + 0.1;
+                const colorPair = colors[Math.floor(Math.random() * colors.length)];
+                circle.style.setProperty('--color1', colorPair[0]); circle.style.setProperty('--color2', colorPair[1]);
+                circle.style.setProperty('--x-start', `${Math.random() * 40 - 20}vw`); circle.style.setProperty('--y-start', `${Math.random() * 40 - 20}vh`);
+                circle.style.setProperty('--x-end', `${Math.random() * 40 - 20}vw`); circle.style.setProperty('--y-end', `${Math.random() * 40 - 20}vh`);
+                circle.style.setProperty('--scale-start', Math.random() * 0.5 + 0.8); circle.style.setProperty('--scale-end', Math.random() * 0.5 + 0.8);
+                circle.style.animationDuration = `${Math.random() * 20 + 15}s`;
+                bokehContainer.appendChild(circle);
+            }
+            locketContainer.addEventListener('click', () => {
+                if (locketContainer.classList.contains('opened')) return;
+                locketContainer.classList.add('opened');
+                locketPrompt.style.transition = 'opacity 0.5s'; locketPrompt.style.opacity = '0';
+                setTimeout(() => {
+                    locketPrompt.classList.add('hidden'); locketReveal.classList.remove('hidden');
+                    locketReveal.style.transition = 'opacity 1.5s 0.5s'; locketReveal.style.opacity = '1';
+                }, 500);
+                for (let i = 0; i < 30; i++) { setTimeout(() => createHeartBalloon(), i * 100); }
+                setTimeout(() => { toPage3Btn.classList.remove('hidden'); }, 2000);
+            }, { once: true });
+            function createHeartBalloon() {
+                const balloon = document.createElement('div');
+                balloon.className = 'heart-balloon';
+                const size = Math.random() * 60 + 20;
+                balloon.style.width = `${size}px`; balloon.style.height = `${size}px`;
+                balloon.style.left = `calc(50% - ${size/2}px)`; balloon.style.top = `calc(50% - ${size/2}px)`;
+                balloon.style.setProperty('--x-drift', `${(Math.random() - 0.5) * 200}px`);
+                const heartColors = ['#ff4757', '#e84393', '#ff7675', '#fd79a8'];
+                const color = heartColors[Math.floor(Math.random() * heartColors.length)];
+                balloon.innerHTML = `<svg viewBox="0 0 32 29.6"><path d="M31.3,11.2C31.3,11.2,31.3,11.2,31.3,11.2c-0.6-5.4-5.2-9.7-10.7-9.7c-3.1,0-5.9,1.4-7.6,3.6c-1.7-2.2-4.5-3.6-7.6-3.6 C-0.1,1.5-4.7,5.8-5.3,11.2c0,0,0,0,0,0c-0.1,0.5-0.1,0.9-0.1,1.4c0,5.2,3.4,9.6,8.2,12.8l7.2,4.8l7.2-4.8c4.8-3.2,8.2-7.6,8.2-12.8 C31.4,12.1,31.4,11.7,31.3,11.2z" fill="${color}"/></svg>`;
+                balloonContainer.appendChild(balloon);
+                setTimeout(() => balloon.remove(), 8000);
+            }
+
+
+            // --- PAGE 3: MEMORY LANE & STORYBOOK SCRIPT ---
+            const memories = [
+                { img: 'https://placehold.co/400x400/FFC0CB/333333?text=Our+First+Date', caption: 'The day it all began.' },
+                { img: 'https://placehold.co/400x400/87CEEB/FFFFFF?text=That+Vacation', caption: 'Unforgettable adventures.' },
+                { img: 'https://placehold.co/400x400/90EE90/333333?text=Silly+Moments', caption: 'Endless laughter.' },
+                { img: 'https://placehold.co/400x400/FFD700/333333?text=A+Special+Day', caption: 'Celebrating us.' },
+                { img: 'https://placehold.co/400x400/e6e6fa/333333?text=Quiet+Evenings', caption: 'Peaceful moments.' },
+                { img: 'https://placehold.co/400x400/ff7f50/FFFFFF?text=Future+Dreams', caption: 'To many more.' }
+            ];
+            
+            const carouselContainer = document.getElementById('carousel-container');
+            const carousel = document.getElementById('carousel');
+            const openBookBtn = document.getElementById('open-book-btn');
+            const finalMessage = document.querySelector('.final-message');
+            const instructionText = document.getElementById('instruction-text');
+            let angle = 0;
+            let rotationSpeed = 0.05; // Base auto-rotation speed
+            const totalPhotos = memories.length;
+            const theta = 360 / totalPhotos;
+            const radius = Math.round((220 / 2) / Math.tan(Math.PI / totalPhotos));
+
+            function setupCarousel() {
+                memories.forEach((mem, index) => {
+                    const polaroid = document.createElement('div');
+                    polaroid.className = 'polaroid';
+                    // Set the CSS variable for the background
+                    polaroid.style.setProperty('--bg-image', `url(${mem.img})`);
+                    polaroid.style.transform = `rotateY(${theta * index}deg) translateZ(${radius}px)`;
+                    polaroid.innerHTML = `
+                        <img src="${mem.img}" alt="Memory ${index + 1}" onerror="this.src='https://placehold.co/400x400/cccccc/333333?text=Image+Not+Found'">
+                        <p class="caption">${mem.caption}</p>`;
+                    carousel.appendChild(polaroid);
+                });
+                animateCarousel();
+            }
+
+            function updateCarousel() {
+                carousel.style.transform = `rotateY(${angle}deg)`;
+                const rotation = Math.round(angle / theta);
+                const activeIndex = (totalPhotos - (rotation % totalPhotos)) % totalPhotos;
+
+                document.querySelectorAll('#carousel .polaroid').forEach((p, i) => {
+                    p.classList.toggle('active', i === activeIndex);
+                    p.style.filter = i === activeIndex ? 'brightness(1) blur(0px)' : 'brightness(0.7) blur(2px)';
+                });
+            }
+            
+            function animateCarousel() {
+                angle += rotationSpeed;
+                updateCarousel();
+                requestAnimationFrame(animateCarousel);
+            }
+
+            carouselContainer.addEventListener('mousemove', (e) => {
+                const containerRect = carouselContainer.getBoundingClientRect();
+                const mouseX = e.clientX - containerRect.left;
+                const center = containerRect.width / 2;
+                const influence = (mouseX - center) / center; // -1 to 1
+                rotationSpeed = 0.05 - (influence * 0.4); // Adjust speed and direction
+                if(instructionText) instructionText.style.opacity = '0';
+                openBookBtn.classList.add('visible');
+            });
+            
+            carouselContainer.addEventListener('mouseleave', () => {
+                rotationSpeed = 0.05; // Reset to auto-rotate on mouse leave
+            });
+
+
+            // Storybook Logic
+            const storybookContainer = document.getElementById('storybook-container');
+            const bookContent = document.getElementById('book-content');
+            const prevPageBtn = document.getElementById('prev-page-btn');
+            const nextPageBtn = document.getElementById('next-page-btn');
+            const closeBookBtn = document.getElementById('close-book-btn');
+            let currentPage = 0;
+            let storyPagesElements = [];
+
+            const storyPages = [
+                { left: `<h3>Chapter One</h3><p>The story of us. It didn't start with a lightning strike, but a quiet spark. A simple hello, a shared smile. I remember thinking... (describe your first impression here).</p>`, right: `<h3>Our First Date</h3><p>And then came our first real adventure. Nervous, excited, and completely captivated. That day, I knew this was something special. (Describe a memory from the first date).</p>` },
+                { left: `<h3>Chapter Two</h3><p>The days turned into weeks, and the spark grew into a flame. We discovered a world in each other, filled with laughter, silly jokes, and endless conversations that lasted until morning.</p>`, right: `<h3>Growing Together</h3><p>It wasn't just about the good times. We learned to lean on each other, to be the calm in the storm. Every challenge we faced only made us stronger, our roots growing deeper together.</p>` },
+                { left: `<h3>Chapter Three</h3><p>And now, looking at you today, my heart is so full. You are my home, my greatest adventure, my quiet place. You make every ordinary moment feel extraordinary.</p>`, right: `<h3>To The Future</h3><p>This book is far from over. Today is a new page, and I can't wait to write all the next chapters with you. To a future filled with more love, more laughter, and more us. </p>` }
+            ];
+            
+            function setupStorybook() {
+                if (storyPagesElements.length > 0) return;
+
+                storyPages.forEach(pageData => {
+                    const pagePair = document.createElement('div');
+                    pagePair.className = 'page-pair';
+                    pagePair.innerHTML = `<div class="book-page">${pageData.left}</div><div class="book-page">${pageData.right}</div>`;
+                    bookContent.appendChild(pagePair);
+                    storyPagesElements.push(pagePair);
+                });
+            }
+            
+            function showBookPage(pageIndex) {
+                storyPagesElements.forEach((page, index) => {
+                    page.classList.toggle('active', index === pageIndex);
+                });
+                prevPageBtn.disabled = pageIndex === 0;
+                nextPageBtn.disabled = pageIndex === storyPages.length - 1;
+            }
+
+            function showStorybook() {
+                carouselContainer.style.opacity = '0';
+                carouselContainer.style.transform = 'scale(0.8)';
+                openBookBtn.style.opacity = '0';
+                setupStorybook();
+                currentPage = 0;
+                showBookPage(currentPage);
+                storybookContainer.classList.add('visible');
+            }
+            openBookBtn.addEventListener('click', showStorybook);
+
+            function closeStorybook() {
+                storybookContainer.classList.remove('visible');
+                finalMessage.classList.add('visible');
+            }
+            closeBookBtn.addEventListener('click', closeStorybook);
+
+            prevPageBtn.addEventListener('click', () => { 
+                if(currentPage > 0) { 
+                    currentPage--; 
+                    showBookPage(currentPage); 
+                } 
+            });
+            nextPageBtn.addEventListener('click', () => {
+                if(currentPage < storyPages.length - 1) {
+                    currentPage++;
+                    showBookPage(currentPage);
+                } else {
+                    closeStorybook();
+                }
+            });
+
+            // Particles.js for background
+            const page3Observer = new MutationObserver((mutations) => {
+                mutations.forEach(mutation => {
+                    if (mutation.attributeName === 'class' && page3.classList.contains('active')) {
+                        if(carousel.children.length === 0) { 
+                            setupCarousel();
+                            particlesJS('particles-js', { particles: { number: { value: 40, density: { enable: true, value_area: 800 } }, color: { value: "#ffffff" }, shape: { type: "image", image: { src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ff7b7b'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E", width: 100, height: 100 } }, opacity: { value: 0.6, random: true }, size: { value: 15, random: true }, move: { enable: true, speed: 1, direction: "top", random: true, straight: false, out_mode: "out" } }, interactivity: { detect_on: "canvas", events: { onhover: { enable: false }, onclick: { enable: false } }, resize: true } });
+                        }
+                    }
+                });
+            });
+            page3Observer.observe(page3, { attributes: true });
+
+            window.addEventListener('resize', () => { 
+                if (canvas) {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
